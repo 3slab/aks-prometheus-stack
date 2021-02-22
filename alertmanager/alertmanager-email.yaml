@@ -1,0 +1,31 @@
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: sendgrid-config
+data:
+  authPassword: <base64 api key secret encoded>
+
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: send-all-alerts-to-architect
+  labels:
+    alertmanager-config: "true"
+spec:
+  route:
+    groupBy: ['alertname', 'namespace']
+    receiver: 'team-architect'
+  receivers:
+  - name: 'team-architect'
+    emailConfigs:
+    - to: 'architect-email@suez.com'
+      from: 'monitoringdev@3slab.io'
+      smarthost: 'smtp.sendgrid.net:25'
+      authUsername: apikey
+      authPassword:
+        key: authPassword
+        name: sendgrid-config
+      sendResolved: true

@@ -1,0 +1,64 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: kube-prometheus-stack
+    release: monitoring
+  name: prometheus-postgres-base-alerts
+spec:
+  groups:
+  - name: ./postgres-base-alert.rules
+    rules:
+      - alert: PostgresqlReplicationLag
+        expr: pg_replication_lag > 30 and ON(instance) pg_replication_is_replica == 1
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: Postgresql replication lag (instance {{ $labels.instance }})
+          description: "PostgreSQL replication lag is going up (> 30s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+      - alert: PostgresqlWaleReplicationStopped
+        expr: rate(pg_xlog_position_bytes[1m]) == 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: Postgresql WALE replication stopped (instance {{ $labels.instance }})
+          description: "WAL-E replication seems to be stopped\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+      - alert: PostgresqlReplicationLagBytes
+        expr: (pg_xlog_position_bytes and pg_replication_is_replica == 0) - GROUP_RIGHT(instance) (pg_xlog_position_bytes and pg_replication_is_replica == 1) > 1e+09
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: Postgresql replication lag bytes (instance {{ $labels.instance }})
+          description: "Postgres Replication lag (in bytes) is high\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+      - alert: PostgresqlUnusedReplicationSlot
+        expr: pg_replication_slots_active == 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Postgresql unused replication slot (instance {{ $labels.instance }})
+          description: "Unused Replication Slots\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+      - alert: PostgresqlSplitBrain
+        expr: count(pg_replication_is_replica == 0) != 1
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: Postgresql split brain (instance {{ $labels.instance }})
+          description: "Split Brain, too many primary Postgresql databases in read-write mode\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+      - alert: PostgresqlPromotedNode
+        expr: pg_replication_is_replica and changes(pg_replication_is_replica[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: Postgresql promoted node (instance {{ $labels.instance }})
+          description: "Postgresql standby server has been promoted as primary node\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"

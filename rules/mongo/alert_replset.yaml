@@ -1,0 +1,82 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: kube-prometheus-stack
+    release: monitoring
+  name: prometheus-mongodb-base-alerts
+spec:
+  groups:
+  - name: ./mongodb-base-alert.rules
+    rules:
+      - alert: MongodbReplicationLag
+        expr: mongodb_mongod_replset_member_optime_date{state="PRIMARY"} - ON (set) mongodb_mongod_replset_member_optime_date{state="SECONDARY"} > 10
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: MongoDB replication lag (instance {{ $labels.instance }})
+          description: "Mongodb replication lag is more than 10s\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+      - alert: MongodbReplicationHeadroom
+        expr: (avg(mongodb_mongod_replset_oplog_tail_timestamp - mongodb_mongod_replset_oplog_head_timestamp) - (avg(mongodb_mongod_replset_member_optime_date{state="PRIMARY"}) - avg(mongodb_mongod_replset_member_optime_date{state="SECONDARY"}))) <= 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: MongoDB replication headroom (instance {{ $labels.instance }})
+          description: "MongoDB replication headroom is <= 0\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+      - alert: MongodbReplicationLag
+        expr: avg(mongodb_replset_member_optime_date{state="PRIMARY"}) - avg(mongodb_replset_member_optime_date{state="SECONDARY"}) > 10
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: MongoDB replication lag (instance {{ $labels.instance }})
+          description: "Mongodb replication lag is more than 10s\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+      - alert: MongodbReplicationStatus3
+        expr: mongodb_replset_member_state == 3
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: MongoDB replication Status 3 (instance {{ $labels.instance }})
+          description: "MongoDB Replication set member either perform startup self-checks, or transition from completing a rollback or resync\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+      - alert: MongodbReplicationStatus6
+        expr: mongodb_replset_member_state == 6
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: MongoDB replication Status 6 (instance {{ $labels.instance }})
+          description: "MongoDB Replication set member as seen from another member of the set, is not yet known\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+      - alert: MongodbReplicationStatus8
+        expr: mongodb_replset_member_state == 8
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: MongoDB replication Status 8 (instance {{ $labels.instance }})
+          description: "MongoDB Replication set member as seen from another member of the set, is unreachable\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+      - alert: MongodbReplicationStatus9
+        expr: mongodb_replset_member_state == 9
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: MongoDB replication Status 9 (instance {{ $labels.instance }})
+          description: "MongoDB Replication set member is actively performing a rollback. Data is not available for reads\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+      - alert: MongodbReplicationStatus10
+        expr: mongodb_replset_member_state == 10
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: MongoDB replication Status 10 (instance {{ $labels.instance }})
+          description: "MongoDB Replication set member was once in a replica set but was subsequently removed\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"

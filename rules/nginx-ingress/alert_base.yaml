@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: kube-prometheus-stack
+    release: monitoring
+  name: prometheus-nginx-ingress-base-alerts
+spec:
+  groups:
+  - name: ./nginx-ingress-base-alert.rules
+    rules:
+      - alert: NginxIngressErreur5XX
+        expr: label_replace(rate(nginx_ingress_controller_requests{status=~"5.*", exported_namespace!~"cicd|monitoring"}[2m]), "namespace", "$1", "exported_namespace", "(.*)") > 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: Ingress is responding with 5XX (instance {{ $labels.instance }})
+          description: "Ingress is responding with 5XX\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"

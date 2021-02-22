@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: monitoring
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: nginx-ingress
+  name: nginx-ingress-prometheus-nginx-ingress-exporter
+spec:
+  endpoints:
+    - interval: 30s
+      port: metrics
+      scheme: http
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: nginx-ingress
+      app.kubernetes.io/component: controller
+  namespaceSelector:
+    matchNames:
+      - ingress-basic

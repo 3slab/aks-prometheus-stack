@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: monitoring
+  name: kong-exporter-prometheus-kong-exporter
+spec:
+  endpoints:
+    - interval: 15s
+      port: kong-admin
+      scheme: http
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: kong
+      app.kubernetes.io/name: kong
+  namespaceSelector:
+    matchNames:
+      - my-namespace

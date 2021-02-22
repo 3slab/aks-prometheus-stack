@@ -1,0 +1,31 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: blackbox-service-monitor
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  jobLabel: blackbox-exporter
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: blackbox-exporter
+      app.kubernetes.io/name: prometheus-blackbox-exporter
+  namespaceSelector:
+    matchNames:
+      - monitoring
+  endpoints:
+    - port: http
+      interval: 30s
+      scrapeTimeout: 30s
+      path: /probe
+      params:
+        target:
+          - https://www.google.com
+        module:
+          - http_2xx
+      metricRelabelings:
+      - targetLabel: instance
+        replacement: https://www.google.com
+      - targetLabel: target
+        replacement: "google"

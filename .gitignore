@@ -1,0 +1,6 @@
+values_test.yaml
+values_myproject.yaml
+test.log
+basic-auth/*
+!basic-auth/.gitkeep
+**/*/*_myproject.yaml
