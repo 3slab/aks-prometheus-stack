@@ -4,13 +4,13 @@ metadata:
   labels:
     app: kube-prometheus-stack
     release: monitoring
-  name: prometheus-mongodb-base-alerts
+  name: prometheus-mongodb-replset-alerts
 spec:
   groups:
-  - name: ./mongodb-base-alert.rules
+  - name: ./mongodb-replset-alert.rules
     rules:
       - alert: MongodbReplicationLag
-        expr: mongodb_mongod_replset_member_optime_date{state="PRIMARY"} - ON (set) mongodb_mongod_replset_member_optime_date{state="SECONDARY"} > 10
+        expr: mongodb_mongod_replset_member_optime_date{state="PRIMARY"} - min(mongodb_mongod_replset_member_optime_date{state="SECONDARY"}) > 10
         for: 0m
         labels:
           severity: critical
@@ -26,15 +26,6 @@ spec:
         annotations:
           summary: MongoDB replication headroom (instance {{ $labels.instance }})
           description: "MongoDB replication headroom is <= 0\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
-
-      - alert: MongodbReplicationLag
-        expr: avg(mongodb_replset_member_optime_date{state="PRIMARY"}) - avg(mongodb_replset_member_optime_date{state="SECONDARY"}) > 10
-        for: 0m
-        labels:
-          severity: critical
-        annotations:
-          summary: MongoDB replication lag (instance {{ $labels.instance }})
-          description: "Mongodb replication lag is more than 10s\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
       - alert: MongodbReplicationStatus3
         expr: mongodb_replset_member_state == 3
