@@ -37,6 +37,7 @@ rabbitmq:
   password: guest
   # If existingPasswordSecret is set then password is ignored
   existingPasswordSecret: ~
+  existingPasswordSecretKey: password
   capabilities: bert,no_sort
   include_queues: ".*"
   include_vhost: ".*"
@@ -47,6 +48,8 @@ rabbitmq:
   output_format: "TTY"
   timeout: 30
   max_queues: 0
+
+podLabels: {}
 
 annotations: {}
 #  prometheus.io/scrape: "true"

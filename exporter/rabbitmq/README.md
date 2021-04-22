@@ -9,7 +9,7 @@ Setup the [values.yaml](./values.yaml) file
 Install the exporter
 
 ```
-helm install rabbitmq-exporter --version=0.6.0 --namespace=monitoring prometheus-community/prometheus-rabbitmq-exporter -f values.yaml --debug --dry-run
+helm install rabbitmq-exporter --version=1.0.0 --namespace=monitoring prometheus-community/prometheus-rabbitmq-exporter -f values.yaml --debug --dry-run
 ```
 
 **Alerts are bundled in the chart**

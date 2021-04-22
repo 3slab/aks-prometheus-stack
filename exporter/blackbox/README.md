@@ -9,7 +9,7 @@ Setup the [values.yaml](./values.yaml) file
 Install the exporter
 
 ```
-helm install blackbox-exporter --version=4.10.2 --namespace=monitoring prometheus-community/prometheus-blackbox-exporter -f values.yaml --debug --dry-run
+helm install blackbox-exporter --version=4.11.0 --namespace=monitoring prometheus-community/prometheus-blackbox-exporter -f values.yaml --debug --dry-run
 ```
 
 ## Usage

@@ -16,7 +16,7 @@ Setup the [values.yaml](./values.yaml) file
 Install the exporter
 
 ```
-helm install mysql-exporter --version=1.0.1 --namespace=monitoring prometheus-community/prometheus-mysql-exporter -f values.yaml  --debug --dry-run
+helm install mysql-exporter --version=1.1.0 --namespace=monitoring prometheus-community/prometheus-mysql-exporter -f values.yaml  --debug --dry-run
 ```
 
 ## Alerts

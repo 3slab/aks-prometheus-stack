@@ -18,7 +18,7 @@ serviceMonitor:
 Install the exporter
 
 ```
-helm install elasticsearch-exporter --version=4.0.1 --namespace=monitoring prometheus-community/prometheus-elasticsearch-exporter -f values.yaml --debug --dry-run
+helm install elasticsearch-exporter --version=4.4.0 --namespace=monitoring prometheus-community/prometheus-elasticsearch-exporter -f values.yaml --debug --dry-run
 ```
 
 ## Alerts

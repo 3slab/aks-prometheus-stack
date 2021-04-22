@@ -11,7 +11,7 @@ Setup the [values.yaml](./values.yaml) file
 Install the exporter
 
 ```
-helm install postgres-exporter --version=1.7.0 --namespace=monitoring prometheus-community/prometheus-postgres-exporter -f values.yaml --debug --dry-run
+helm install postgres-exporter --version=2.3.0 --namespace=monitoring prometheus-community/prometheus-postgres-exporter -f values.yaml --debug --dry-run
 ```
 
 ## Alerts

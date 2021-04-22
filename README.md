@@ -4,7 +4,7 @@ This repository provides a guideline with base settings to enable the prometheus
 
 It uses the helm chart [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) as its core.
 
-**Current documentation done with chart version 13.0.2**
+**Current documentation done with chart version 15.1.3. It needs k8s >= 1.19.**
 
 ## Installation
 
@@ -58,7 +58,7 @@ kubectl -n monitoring create secret generic basic-auth-alertmanager --from-file=
 6. Install the prometheus stack
 
 ```
-helm install --namespace=monitoring monitoring prometheus-community/kube-prometheus-stack --version=13.0.2 -f values.yaml -f values_myproject.yaml --dry-run --debug
+helm install --namespace=monitoring monitoring prometheus-community/kube-prometheus-stack --version=15.1.3 -f values.yaml -f values_myproject.yaml --dry-run --debug
 ```
 
 *Remove the dry run and debug when you have reviewed what helm is going to deploy*
